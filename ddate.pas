@@ -336,7 +336,7 @@ begin
 (* Versão do comando. *)
     
     clrscr;
-    fastwriteln('ddate version 0.9');
+    fastwriteln('ddate version 1.0');
     fastwriteln('Copyright (c) 2020 Brazilian MSX Crew.');
     fastwriteln('Some rights reserved.');
     fastwriteln('This software claims to be distributed due to the GPL v3 license.');
