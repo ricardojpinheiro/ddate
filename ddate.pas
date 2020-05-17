@@ -17,8 +17,6 @@
    along with this program; if not, write to the Free Software
    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
    MA 02110-1301, USA.
-   
-   
 }
 program ddate;
 
@@ -36,31 +34,42 @@ var i, j, Returned : integer;
     version: TMSXDOSVersion;
     Date: TDate;
 
-procedure Discordian (Date: TDate);
+procedure Discordian (Date: TDate; State: Boolean);
+
+(* O início de tudo, no calendário discordiano. *)
+
 const
     CurseOfGreyFace = -1166;
-type
-    DiscordianSeasonText = (Chaos,Discord,Confusion,Bureaucracy,TheAftermath);
-    DiscordianWeek = (Sweetmorn,Boomtime,Pungenday,PricklePrickle,SettingOrange);
-    DiscordianWeekDays = (Sweet,Boom,Pungent,Prickle,Orange);
     
 var
     BissextYear: boolean;
     Factor, DayOfTheYear: integer;
     DiscordianYear, DiscordianSeason, DiscordianDay: integer;
     DiscordianDayOfTheWeek: integer;
-    i: byte;
-    DayText, SeasonText: string[15];
+    i, j: byte;
+    temporary, DayText, SeasonText: string[15];
+    Holiday: string[30];
+    Suffix: string[2];
+    Phrase: string[60];
 
 begin
     DayOfTheYear := 0;
     SeasonText := ' ';
+    Holiday := ' ';
+    Suffix := 'th';
     BissextYear := false;
     Factor := 0;
+    
+(* Ano no calendário discordiano *)    
+    
     DiscordianYear := Date.nYear - CurseOfGreyFace;
+
+(* Se é bissexto, liga a flag. *)
 
     if (Year mod 4 = 0) then
         BissextYear := true;
+
+(* Aqui contamos quantos dias do ano se passaram. *)
 
     for i := 1 to (Date.nMonth - 1) do
     begin
@@ -84,6 +93,8 @@ begin
         DayOfTheYear := DayOfTheYear + Factor;
     end;
     DayOfTheYear := DayOfTheYear + Date.nDay;
+
+(* Estação (mês) do ano no calendário discordiano. *)
     
     DiscordianSeason := (DayOfTheYear div 73);
     case DiscordianSeason of
@@ -93,13 +104,22 @@ begin
         3: SeasonText := 'Bureaucracy';
         4: SeasonText := 'The Aftermath';
     end;
+
+(* Dia do ano no calendário discordiano. *)
     
     DiscordianDay := (DayOfTheYear - DiscordianSeason * 73);
+
+(* Não há dia zero. *)
     
     if DiscordianDay = 0 then
         DiscordianDay := 1;
 
+(* Dia da semana, no calendário discordiano. *)
+
     DiscordianDayOfTheWeek := (DayOfTheYear mod 5);
+
+(* Se for bissexto, tem que pular o dia extra - 29/2,
+*  no nosso calendário. *)
 
     if (BissextYear = true) and (Month > 2) then
     begin
@@ -115,18 +135,114 @@ begin
         0: DayText := 'Setting Orange';
     end;
 
+(* Se for dia 29/2, é St. Tibs Day, que não conta pro calendário. *)
+
     if (BissextYear = true) and (Month = 2) and (Day = 29) then
             DayText := 'St. Tibs Day'; 
+
+(* Aqui é um ajuste para o sufixo do ano, em inglês: 1st, 2nd, 3rd, 4th 
+*  e segue adiante. *)
     
-    writeln('Day in the year: ',DayOfTheYear);
-    writeln('Discordian Year: ',DiscordianYear);
-    writeln('Discordian Season: ',SeasonText);
-    writeln('Discordian Day: ',DiscordianDay);
-    writeln('Discordian Day of the Week: ',DayText);
+    i := (DiscordianDay div 10);
+    j := (DiscordianDay - (i * 10));
+    
+    case j of
+        1: Suffix := 'st';
+        2: Suffix := 'nd';
+        3: Suffix := 'rd';
+    end;
+
+(* Aqui, os feriados oficiais - que eu acrescentei por conta própria. 
+*  Aninhei alguns cases. *)
+
+    case DiscordianSeason of
+        0:  case DiscordianDay of
+                5: Holiday := '(Mungday)';
+                50: Holiday := '(Chaoflux)';
+            end;
+        1:  case DiscordianDay of
+                5: Holiday := '(Mojoday)';
+                50: Holiday := '(Discoflux)';
+            end;
+        2: case DiscordianDay of
+                5: Holiday := '(Syaday)';
+                50: Holiday := '(Contuflux)';
+            end;
+        3: case DiscordianDay of
+                5: Holiday := '(Zaraday)';
+                50: Holiday := '(Bureflux)';
+            end;
+        4: case DiscordianDay of
+                5: Holiday := '(Maladay)';
+                50: Holiday := '(Afflux)';
+            end;
+    end;
+    case DiscordianDay of
+        27: Holiday := '(Sloth Day)';
+        50: Holiday := '(Flux Day)';
+        73: Holiday := '(Eye Day)';
+    end;
+
+(* Agora temos os feriados não-oficiais. Aí virou bagunça *)
+    case DiscordianSeason of
+        0:  case DiscordianDay of
+                11: Holiday := '(Love Your Neighbor Day)';
+                23: Holiday := '(Jake Day)';
+            end;
+        1:  case DiscordianDay of
+                11: Holiday := '(Love Your Neighbor Day)';
+                23: Holiday := '(Jake Day)';
+                60: Holiday := '(Saint Camping''s Day)';
+                70: Holiday := '(Eris Day)';
+                72: Holiday := '(Towel Day)';
+            end;
+        2: case DiscordianDay of
+                5: Holiday := '(Mid Year''s Day)';
+                40: Holiday := '(X-Day)';
+            end;
+        3: case DiscordianDay of
+                3: Holiday := '(Multiversal Underwear Day)';
+                50: Holiday := '(Bureflux)';
+            end;
+        4: case DiscordianDay of
+                5: Holiday := '(Maladay)';
+                50: Holiday := '(Afflux)';
+            end;
+    end;
+
+
+(* Aqui monta a sentença. Se a data foi informada, é false. Se não foi 
+*  informada (usa-se a data do RTC do MSX), é true. *)
+
+    if State = True then
+    begin
+        Str(DiscordianDay, temporary);
+        Phrase := concat(DayText,', ',SeasonText,' ',temporary,', ');
+        temporary := ' ';
+        Str(DiscordianYear, temporary);
+        Phrase := Phrase + concat(temporary, ' YOLD', ' ',Holiday);
+    end
+    else
+    begin
+        Str(DiscordianDay, temporary);
+        Phrase := concat('Today is ', DayText, ', the ', temporary, Suffix, 
+                    ' day of ', SeasonText, ' in the YOLD ');
+        temporary := ' ';
+        Str(DiscordianYear, temporary);
+        Phrase := Phrase + concat(temporary, ' ', Holiday);
+    end;
+
+(* Imprime a data na tela. *)        
+
+    writeln(Phrase);
 end;
 
 procedure CommandHelp;
 begin
+
+(* Help do comando. *)
+
+    clrscr;
     fastwriteln(' Usage: ddate <day> <month> <year>.');
     fastwriteln(' convert Gregorian dates to Discordian dates.');
     fastwriteln(' ');
@@ -141,18 +257,21 @@ begin
     fastwriteln(' /h or /help      - Show this help and exits.');
     fastwriteln(' /v or /version   - Show info about version and exits.');
     fastwriteln(' ');
-    
     halt;
 end;
 
 procedure CommandVersion;
 begin
-    fastwriteln('ddate version 0.1'); 
+
+(* Versão do comando. *)
+
+    clrscr;
+    fastwriteln('ddate version 0.9'); 
     fastwriteln('Copyright (c) 2020 Brazilian MSX Crew.');
     fastwriteln('Some rights reserved.');
     fastwriteln('This software claims to be distributed due to the GPL v3 license.');
     fastwriteln(' ');
-    fastwriteln('Notas de versao: ');
+    fastwriteln('Version notes: ');
     fastwriteln('In this moment, this utility does this date conversion.'); 
     fastwriteln('Nothing else. I have done it in a Saturday sleepless night.');
     fastwriteln('So... Take it easy.');
@@ -161,8 +280,6 @@ begin
 end;
 
 BEGIN
-    clrscr;
-    
     FillChar(CommandEntry, StringSize, byte( ' ' ));
     
 (*  Testa se é DOS 2. Se não for, mensagem de erro e fim. *)
@@ -176,6 +293,7 @@ BEGIN
     end;
     
 (* Se tiver três parametros, aí temos jogo. Pega as Dates e vamos trabalhar. *)
+
     if paramcount = 3 then
         begin
             Val (paramstr(1), Day, Returned);
@@ -187,7 +305,7 @@ BEGIN
                 (Year < 0) or (Year > maxint) or
                 ((Year mod 4 <> 0) and (Day = 29)) then
                 begin
-                    fastwriteln(' Invalid date -- out of range');
+                    writeln(' Invalid date -- out of range');
                     halt;
                 end
             else
@@ -195,13 +313,13 @@ BEGIN
                     Date.nDay := Day;
                     Date.nMonth := Month;
                     Date.nYear := Year;
-                    Discordian (Date);
-                    writeln(Date.nDay,'/',Date.nMonth,'/',Date.nYear);
+                    Discordian (Date, True);
                     halt;
                 end;
         end;
 
 (* Se tiver dois parametros, está errado. Joga o help na tela e cai fora. *)
+    
     if paramcount = 2 then
         CommandHelp;
 
@@ -224,14 +342,12 @@ BEGIN
             end;
     end;
 
-(* Se não tiver parametro algum, pega a Date do sistema e faz sua mágica. *)
+(* Se não tiver parametro algum, pega a data do sistema e faz sua mágica. *)
     
     if paramcount = 0 then
     begin
-        fastwriteln(' Let the magic begins...');
         DosGetDate (Date);
-        writeln(Date.nDay,'/',Date.nMonth,'/',Date.nYear);
-        Discordian (Date);
+        Discordian (Date, False);
         halt;
     end;
 END.
