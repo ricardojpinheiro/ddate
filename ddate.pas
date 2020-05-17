@@ -48,9 +48,9 @@ var
     DiscordianDayOfTheWeek: integer;
     i, j: byte;
     temporary, DayText, SeasonText: string[15];
-    Holiday: string[30];
+    Holiday: string[48];
     Suffix: string[2];
-    Phrase: string[60];
+    Phrase: string[127];
 
 begin
     DayOfTheYear := 0;
@@ -183,33 +183,102 @@ begin
         73: Holiday := '(Eye Day)';
     end;
 
+(* Há feriados não oficiais que tem duas designações. Vamos deixar que
+*  o acaso decida. *)
+    
+    randomize;
+    i := random(1000)+1;
+    j := i mod 2;
+
 (* Agora temos os feriados não-oficiais. Aí virou bagunça *)
+
     case DiscordianSeason of
         0:  case DiscordianDay of
+                1: Holiday := '(Nude Year Day)';
+                10: Holiday := '(Backwards Day, Reformed)';
                 11: Holiday := '(Love Your Neighbor Day)';
+                18: Holiday := '(Pat Pineapple Day)';
+                21: Holiday := '(Hug Day)';
                 23: Holiday := '(Jake Day)';
+                26: Holiday := '(Backwards Day, Traditional)';
+                46: Holiday := '(Springfield Day)';
+                49: Holiday := '(The Mary Day)';
+                51: Holiday := '(Pet Loving Day)';
+                69: Holiday := '(Chicken Head Day)';
             end;
         1:  case DiscordianDay of
-                11: Holiday := '(Love Your Neighbor Day)';
+                5: Holiday := '(Linganaday)';
+                11: case j of
+                        0: Holiday := '(Discordians for Jesus)';
+                        1: Holiday := '(Love Your Neighbor Day)';
+                    end;
+                18: Holiday := '(Amateur''s Day)';
+                19: case j of
+                        0: Holiday := '(St. John the Blasphemist''s Day)';
+                        1: Holiday := '(Blasphemy Day)';
+                    end;
                 23: Holiday := '(Jake Day)';
+                43: Holiday := '(Universal Ordination Day)';
                 60: Holiday := '(Saint Camping''s Day)';
-                70: Holiday := '(Eris Day)';
+                70: case j of
+                        0: Holiday := '(Jake Day Jr.)';
+                        1: Holiday := '(Day of the Elppin Day)';
+                    end;
                 72: Holiday := '(Towel Day)';
             end;
         2: case DiscordianDay of
-                5: Holiday := '(Mid Year''s Day)';
+                5: case j of
+                        0: Holiday := '(Gulikday)';
+                        1: Holiday := '(Fearless Fred Day)';
+                    end;
+                11: Holiday := '(537 Day)';
+                15: Holiday := '(Mad Hatter Day)';
+                20: Holiday := '(Doomed TV Series Rememberance Day)';
+                26: case j of
+                        0: Holiday := '(Imaginary Friend)';
+                        1: Holiday := '(Captain Tuttle Day)';
+                    end;
+                28: Holiday := '(St. George''s Day)';
+                37: Holiday := '(Mid Year''s Day)';
                 40: Holiday := '(X-Day)';
+                55: Holiday := '(Mal-2 Day)';
+                57: Holiday := '(John Dillinger Day)';
             end;
         3: case DiscordianDay of
                 3: Holiday := '(Multiversal Underwear Day)';
+                10: Holiday := '(St. Cecil Day)';
+                18: Holiday := '(Festival of Hanky-Panky Spankies)';
+                33: case j of
+                        0: Holiday := '(Cat Dancing & Foot Fetish Day)';
+                        1: Holiday := '(Pussyfoot Day)';
+                    end;
+                37: case j of
+                        0: Holiday := '(Mass of Planet Eris)';
+                        1: Holiday := '(Eristotle)';
+                    end;
                 50: Holiday := '(Bureflux)';
+                55: Holiday := '(Feast of St. John the Blasphemist)';
+                57: Holiday := '(Shamlicht Kids Club Day)';
+                59: Holiday := '(Gonkulator Day (Gonculator Day))';
+                60: Holiday := '(Mad Hatter Day)';
             end;
         4: case DiscordianDay of
                 5: Holiday := '(Maladay)';
+                28: Holiday := '(Ek-sen-triks CluborGuild Day)';
+                36: Holiday := '(Spanking Fest)';
+                37: case j of
+                        0: Holiday := '(537 Day)';
+                        1: Holiday := '(Turkey Day)';
+                    end;
+                46: Holiday := '(Hug ay II)';
                 50: Holiday := '(Afflux)';
+                67: case j of
+                        0: Holiday := '(Santa Claus Day)';
+                        1: Holiday := '(Giftmas)';
+                    end;
+                72: Holiday := '(New Year''s Eve Eve)';
             end;
     end;
-
 
 (* Aqui monta a sentença. Se a data foi informada, é false. Se não foi 
 *  informada (usa-se a data do RTC do MSX), é true. *)
@@ -234,14 +303,15 @@ begin
 
 (* Imprime a data na tela. *)        
 
-    writeln(Phrase);
+    gotoxy(WhereX, WhereY);
+    fastwriteln(Phrase);
 end;
 
 procedure CommandHelp;
 begin
 
 (* Help do comando. *)
-
+  
     clrscr;
     fastwriteln(' Usage: ddate <day> <month> <year>.');
     fastwriteln(' convert Gregorian dates to Discordian dates.');
@@ -264,9 +334,9 @@ procedure CommandVersion;
 begin
 
 (* Versão do comando. *)
-
+    
     clrscr;
-    fastwriteln('ddate version 0.9'); 
+    fastwriteln('ddate version 0.9');
     fastwriteln('Copyright (c) 2020 Brazilian MSX Crew.');
     fastwriteln('Some rights reserved.');
     fastwriteln('This software claims to be distributed due to the GPL v3 license.');
@@ -277,6 +347,34 @@ begin
     fastwriteln('So... Take it easy.');
     fastwriteln(' ');
     halt;
+end;
+
+procedure EasterEgg;
+
+begin
+    clrscr;
+    fastwriteln('                       .;coxO0XNWMMMMMMMMMWNX0Oxoc,.                    ');
+    fastwriteln('                ''cx0WMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMW0xc.              ');
+    fastwriteln('             ,dKMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMKo''         ');          
+    fastwriteln('          ;OWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWk;       ');
+    fastwriteln('        oWMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNOdllllllllllllllokKNo     ');
+    fastwriteln('      oWMMMMMM0xOKNMMMMMMMMMMMMMMMMMMMMMMKo;:oOXWMMMMMMMWNNXXNW0d:;:.   ');
+    fastwriteln('    .KMMMMMWd..odl:;,,;:lxOKNMMMMMMMMMWo.c0MMMMMMMMMWXKX0XXKKWMMMMMXl   ');
+    fastwriteln('    XMMMMK: ,OMMMMMMMMMNKOdl: .KMMMMM0 ;NMMMMMWNXXXXXXOO00KKXXNWMMMMMW; ');
+    fastwriteln('   oMMWx. lXMMMMMMMMMMMMMMMMM  OMMMMN ,MMMMXK0KXXXNNXXXXXNNNXXK00KWMMMM,');
+    fastwriteln('   OM0  cWMMMMMMMMMMMMMMMMMMM  kMMMMx kMMM0OXOXKKK0cNKlN0NK0K00KX0ONMMMk');
+    fastwriteln('   :MMNo..oNMMMMMMMMMMMMMMMMM. xMMMM, NMMMOOX:,dd''d:Ox:0:0lcXlOlO0ONMMMl');
+    fastwriteln('    cWMMM0; ;OMMMMMMMMMMMWX0k. dMMW; 0MMMMW0OKNNNNNNNNNNNNNNNNNX0OXMMMX ');
+    fastwriteln('     .oNMMMWd..l0kdl:;;;;;coxOKWKc.lWMMMMMMMNX00KXXXNNNNNNXXKK0KNWMMMX. ');
+    fastwriteln('      ,:;cxKWM0loxOKNMMMMMMNOo:;l0MMMMMMMMMMMMMMWNXXXXKKXXXNNWMMMMMMd   ');
+    fastwriteln('       .xN0xllllllllllllllldOXMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMWx.    ');
+    fastwriteln('          c0MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM0:       ');
+    fastwriteln('             :xNMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMNx;          ');
+    fastwriteln('                .;oOXMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMXOo,.             ');
+    fastwriteln('                      .,:oxOKXWMMMMMMMMMMMMMWXKOxo:,.                   ');
+    fastwriteln('                                   .....                                ');
+    fastwriteln('                                                                        ');
+    fastwriteln('                             The Sacred Chao.                           ');
 end;
 
 BEGIN
@@ -337,6 +435,8 @@ BEGIN
             case CommandEntry[2] of
                 'H': CommandHelp;
                 'h': CommandHelp;
+                'E': EasterEgg;
+                'e': EasterEgg;
                 'V': CommandVersion;
                 'v': CommandVersion;
             end;

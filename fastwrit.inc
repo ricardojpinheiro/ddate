@@ -1,4 +1,18 @@
-Procedure WriteVram (VramBlockUsed: Byte; VramAddr,RamAddr,ByteCount:Integer);
+Function WhereX:Byte;
+Var
+    CSRX: Byte Absolute $f3dd;
+Begin
+    WhereX := CSRX;
+End;
+
+Function WhereY:Byte;
+Var  
+    CSRY: Byte Absolute $f3dc;
+Begin
+    WhereY := CSRY;
+End;
+
+Procedure WriteVram (VramBlockUsed: Byte; VramAddr, RamAddr, ByteCount: Integer);
 Var
 	Expansion, AddrHi, AddrMid, AddrLo: Byte;
 Begin
