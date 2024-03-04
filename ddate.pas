@@ -313,21 +313,20 @@ begin
 (* Help do comando. *)
   
     clrscr;
-    fastwriteln(' Usage: ddate <day> <month> <year>.');
-    fastwriteln(' convert Gregorian dates to Discordian dates.');
+    fastwriteln('Usage: ddate <d> <m> <y>.');
+    fastwriteln('Convert dates from the gregorian ');
+    fastwriteln('calendar to Discordian dates.');
     fastwriteln(' ');
-    fastwriteln(' If called with no arguments, ddate will get the ');
-    fastwriteln(' current system date, convert this to the Discordian ');
-    fastwriteln(' date format and print this on the standard  output.');
-    fastwriteln(' Alternatively, a Gregorian date may be specified on ');
-    fastwriteln(' the command line, in the form of a numerical day, ');
-    fastwriteln(' month and year.');
+    fastwriteln('Parameters: ');
+    fastwriteln('None: Shows Discordian date based');
+    fastwriteln('on MSX''s RTC date.');
+    fastwriteln('<d> <m> <y>: Specific date to be');
+    fastwriteln('converted to a Discordian date.');
     fastwriteln(' ');
-    fastwriteln(' Arguments: ');
-    fastwriteln(' /h or /help      - Show this help and exits.');
-    fastwriteln(' /v or /version   - Show info about version and exits.');
+    fastwriteln('/h - Show this help text and exit.');
+    fastwriteln('/v - Show version info and exit.');
     fastwriteln(' ');
-    halt;
+    exit;
 end;
 
 procedure CommandVersion;
@@ -336,17 +335,30 @@ begin
 (* Versão do comando. *)
     
     clrscr;
-    fastwriteln('ddate version 1.0');
-    fastwriteln('Copyright (c) 2020 Brazilian MSX Crew.');
-    fastwriteln('Some rights reserved.');
-    fastwriteln('This software claims to be distributed due to the GPL v3 license.');
+    fastwriteln('     _     _       _       ');
+    fastwriteln('  __| | __| | __ _| |_ ___ ');
+    fastwriteln(' / _` |/ _` |/ _` | __/ _ \');
+    fastwriteln('| (_| | (_| | (_| | ||  __/');
+    fastwriteln(' \__,_|\__,_|\__,_|\__\___|');
     fastwriteln(' ');
-    fastwriteln('Version notes: ');
-    fastwriteln('In this moment, this utility does this date conversion.'); 
-    fastwriteln('Nothing else. I have done it in a Saturday sleepless night.');
-    fastwriteln('So... Take it easy.');
+    fastwriteln('Version 1.0 - Copyright (c) 2020-2024');
+    fastwriteln('by Brazilian MSX Crew. Some rights');
+    fastwriteln('reserved (not many!)');
     fastwriteln(' ');
-    halt;
+    fastwriteln('This utility converts dates, from the');
+    fastwriteln('Gregorian calendar to the Discordian.');
+    fastwriteln('https://tinyurl.com/discordianism');
+    fastwriteln(' ');
+    fastwriteln('It''s licensed under the GPLv3+ license.');
+    fastwriteln('Yep, free software. You are free to');
+    fastwriteln('change and redistribute it. But don''t');
+    fastwriteln('ask me about any warranties... Use it ');
+    fastwriteln('at your own risk. ');
+    fastwriteln('http://gnu.org/licenses/gpl.html');
+    fastwriteln(' ');    
+    fastwriteln('I done this in a Saturday sleepless'); 
+    fastwriteln('night. So... Take it easy.');
+    exit;
 end;
 
 procedure EasterEgg;
@@ -387,7 +399,7 @@ BEGIN
     if (version.nKernelMajor < 2) then
     begin
         fastwriteln('MSX-DOS 1.x not supported. Sorry pal.');
-        halt;
+        exit;
     end;
     
 (* Se tiver três parametros, aí temos jogo. Pega as Dates e vamos trabalhar. *)
@@ -404,7 +416,7 @@ BEGIN
                 ((Year mod 4 <> 0) and (Day = 29)) then
                 begin
                     writeln(' Invalid date -- out of range');
-                    halt;
+                    exit;
                 end
             else
                 begin
@@ -412,7 +424,7 @@ BEGIN
                     Date.nMonth := Month;
                     Date.nYear := Year;
                     Discordian (Date, True);
-                    halt;
+                    exit;
                 end;
         end;
 
@@ -448,7 +460,7 @@ BEGIN
     begin
         DosGetDate (Date);
         Discordian (Date, False);
-        halt;
+        exit;
     end;
 END.
 
